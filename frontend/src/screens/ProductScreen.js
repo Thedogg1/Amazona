@@ -29,7 +29,7 @@ const reducer = (state, action) => {
 
 function ProductScreen() {
   const params = useParams();
-  const { slug } = params;
+  const { id } = params;
   const navigate = useNavigate();
 
   const [{ loading, error, product }, dispatch] = useReducer(reducer, {
@@ -41,14 +41,14 @@ function ProductScreen() {
     const fetchData = async () => {
       dispatch({ type: 'FETCH_REQUEST' });
       try {
-        const result = await axios.get(`/api/products/slug/${slug}`);
+        const result = await axios.get(`/api/products/${id}`);
         dispatch({ type: 'FETCH_SUCCESS', payload: result.data });
       } catch (err) {
         dispatch({ type: 'FETCH_FAIL', payload: getError(err) });
       }
     };
     fetchData();
-  }, [slug]);
+  }, [id]);
 
   const { state, dispatch: ctxDispatch } = useContext(Store);
   const { cart } = state;

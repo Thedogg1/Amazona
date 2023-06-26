@@ -22,17 +22,34 @@ app.get('/api/products', async (req, res) => {
   }
 });
 
-//get a product
+//get a product by slug
+
+app.get('/product/:slug', async (req, res) => {
+  try {
+    const { slug } = JSON.stringify(req.params);
+    console.log(slug);
+    const product = await pool.query(
+      'SELECT * FROM product_cat WHERE slug = "$1"',
+      [slug]
+    );
+
+    res.json(product.rows[0]);
+  } catch (err) {
+    console.error(err.message);
+  }
+});
+
+//get a product by id
 
 app.get('/api/products/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const todo = await pool.query(
+    const product = await pool.query(
       'SELECT * FROM product_cat WHERE product_id = $1',
       [id]
     );
 
-    res.json(todo.rows[0]);
+    res.json(product.rows[0]);
   } catch (err) {
     console.error(err.message);
   }
