@@ -1,12 +1,16 @@
-import { Link, useLocation } from 'react-router-dom';
+import Axios from 'axios';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import { Helmet } from 'react-helmet-async';
-import Axios from 'axios';
-import { useState } from 'react';
-
+import { useContext, useEffect, useState } from 'react';
+import { Store } from '../Store';
+import { toast } from 'react-toastify';
+import { getError } from '../utils';
+// user name doesnt appear.  test teh contents of userinfo!!
 export default function SigninScreen() {
+  const navigate = useNavigate();
   const { search } = useLocation();
   const redirectInUrl = new URLSearchParams(search).get('redirect');
   const redirect = redirectInUrl ? redirectInUrl : '/';
@@ -14,17 +18,28 @@ export default function SigninScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
+  const { state, dispatch: ctxDispatch } = useContext(Store);
+  const { userInfo } = state;
   const submitHandler = async (e) => {
     e.preventDefault();
-
     try {
-      const { data } = await Axios.post('/users/signin', {
+      const { data } = await Axios.post('/api/users/signin', {
         email,
         password,
       });
-      console.log(data);
-    } catch (err) {}
+      ctxDispatch({ type: 'USER_SIGNIN', payload: data });
+      localStorage.setItem('userInfo', JSON.stringify(data));
+      navigate(redirect || '/');
+    } catch (err) {
+      toast.error(getError(err));
+    }
   };
+
+  useEffect(() => {
+    if (userInfo) {
+      navigate(redirect);
+    }
+  }, [navigate, redirect, userInfo]);
 
   return (
     <Container className="small-container">
@@ -60,4 +75,3 @@ export default function SigninScreen() {
     </Container>
   );
 }
-////BEGIN FROM START OF STEP 23
