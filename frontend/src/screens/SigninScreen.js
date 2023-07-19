@@ -20,6 +20,7 @@ export default function SigninScreen() {
 
   const { state, dispatch: ctxDispatch } = useContext(Store);
   const { userInfo } = state;
+
   const submitHandler = async (e) => {
     e.preventDefault();
     try {
@@ -27,8 +28,10 @@ export default function SigninScreen() {
         email,
         password,
       });
-      ctxDispatch({ type: 'USER_SIGNIN', payload: data });
-      localStorage.setItem('userInfo', JSON.stringify(data));
+
+      ctxDispatch({ type: 'USER_SIGNIN', payload: data.rows[0] });
+      localStorage.setItem('userInfo', JSON.stringify(data.rows[0]));
+      console.log(userInfo);
       navigate(redirect || '/');
     } catch (err) {
       toast.error(getError(err));

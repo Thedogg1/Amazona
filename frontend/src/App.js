@@ -14,7 +14,7 @@ import SigninScreen from './screens/SigninScreen';
 
 function App() {
   const { state, userInfo } = useContext(Store);
-  
+
   const { cart } = state;
   return (
     <BrowserRouter>
@@ -36,7 +36,7 @@ function App() {
                 </Link>
 
                 {userInfo ? (
-                  <NavDropdown title={userInfo} id="basic-nav-dropdown">
+                  <NavDropdown title={userInfo.name} id="basic-nav-dropdown">
                     <LinkContainer to="/profile">
                       <NavDropdown.Item>User Profile</NavDropdown.Item>
                     </LinkContainer>
